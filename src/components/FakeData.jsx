@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import seedrandom from 'seedrandom';
 
 function FakeData() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ function FakeData() {
     sliderValue: 0,
     numberValue: 0,
     seed: '808',
+    randomSeed: seedrandom('808').int32(),
   });
   const [users, setUsers] = useState([]);
 
@@ -53,7 +55,7 @@ function FakeData() {
     }
   };
 
-  // Seed
+  // Randomseed
   const handleSeedChange = (event) => {
     setFormData({
       ...formData,
@@ -61,10 +63,12 @@ function FakeData() {
     });
   };
   const generateRandomSeed = () => {
-    const randomSeed = Math.floor(Math.random() * 100000);
+    const seed = Math.floor(Math.random() * 100000).toString();
+    const rng = seedrandom(seed);
     setFormData({
       ...formData,
-      seed: randomSeed.toString(),
+      seed: seed,
+      randomSeed: rng.int32(),
     });
   };
 
@@ -75,7 +79,6 @@ function FakeData() {
         `https://randomuser.me/api/?page=1&results=20&seed=${formData.seed}&nat=${formData.selectedRegion}&inc=name,location,phone`
       );
       const data = await response.json();
-      console.log(data.results);
       setUsers(data.results);
     } catch (error) {
       console.error('Error to fetch users:', error);
@@ -83,7 +86,7 @@ function FakeData() {
   };
   useEffect(() => {
     fetchRandomUsers();
-  }, [formData.selectedRegion, formData.seed]);
+  }, [formData.selectedRegion, formData.randomSeed, formData.seed]);
 
   return (
     <Container className="d-flex flex-column">
@@ -132,7 +135,7 @@ function FakeData() {
               aria-describedby="basic-addon1"
             />
             <Button variant="warning" onClick={generateRandomSeed}>
-              Random
+              <i className="bi bi-shuffle"></i>
             </Button>
           </InputGroup>
         </Col>
