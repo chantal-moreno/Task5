@@ -8,6 +8,8 @@ import {
   Table,
 } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
 function FakeData() {
   const [formData, setFormData] = useState({
     selectedRegion: 'mx',
@@ -146,7 +148,7 @@ function FakeData() {
           {users.map((user, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>Random identifier</td>
+              <td>{uuidv4()}</td>
               <td>{`${user.name.first} ${user.name.last}`}</td>
               <td>{`${user.location.state}, ${user.location.city}, ${user.location.street.name}, ${user.location.street.number}`}</td>
               <td>{`${user.phone}`}</td>
