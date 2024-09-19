@@ -7,14 +7,15 @@ import {
   Button,
   Table,
 } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 function FakeData() {
   const [formData, setFormData] = useState({
-    selectedRegion: '0',
+    selectedRegion: 'mx',
     sliderValue: 0,
     numberValue: 0,
-    seed: '',
+    seed: '808',
   });
+  const [users, setUsers] = useState([]);
 
   // Select
   const handleSelectChange = (event) => {
@@ -65,6 +66,23 @@ function FakeData() {
     });
   };
 
+  // API
+  const fetchRandomUsers = async () => {
+    try {
+      const response = await fetch(
+        `https://randomuser.me/api/?page=1&results=20&seed=${formData.seed}&nat=${formData.selectedRegion}&inc=name,location,phone`
+      );
+      const data = await response.json();
+      console.log(data.results);
+      setUsers(data.results);
+    } catch (error) {
+      console.error('Error to fetch users:', error);
+    }
+  };
+  useEffect(() => {
+    fetchRandomUsers();
+  }, [formData.selectedRegion, formData.seed]);
+
   return (
     <Container className="d-flex flex-column">
       <Row className="mb-3 mt-5 flex-column flex-md-row">
@@ -76,9 +94,11 @@ function FakeData() {
               value={formData.selectedRegion}
               onChange={handleSelectChange}
             >
-              <option value="0">Region 1</option>
-              <option value="1">Region 2</option>
-              <option value="2">Region 3</option>
+              <option value="mx">Mexico</option>
+              <option value="rs">Russia</option>
+              <option value="us">United States</option>
+              <option value="fr">France</option>
+              <option value="nz">New Zealand</option>
             </Form.Select>
           </InputGroup>
         </Col>
@@ -120,15 +140,18 @@ function FakeData() {
           </Button>
         </Col>
       </Row>
+
       <Table striped bordered hover>
         <tbody>
-          <tr>
-            <td>Index 1,2,3...</td>
-            <td>Random identifier</td>
-            <td>Name + middle name + last name</td>
-            <td>Address city + street + building + apartment</td>
-            <td>Phone +58</td>
-          </tr>
+          {users.map((user, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>Random identifier</td>
+              <td>{`${user.name.first} ${user.name.last}`}</td>
+              <td>{`${user.location.state}, ${user.location.city}, ${user.location.street.name}, ${user.location.street.number}`}</td>
+              <td>{`${user.phone}`}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </Container>
