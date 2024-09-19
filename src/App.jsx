@@ -1,7 +1,12 @@
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import FakeData from './components/FakeData';
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <FakeData />
+    </>
+  );
 }
 
 export default App;
