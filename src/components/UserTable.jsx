@@ -1,5 +1,4 @@
 import { Table } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 
@@ -37,9 +36,9 @@ function UserTable({ users, addErrors, numberValue, loadMoreUsers }) {
             const modifiedPhone = addErrors(user.phone, numberValue);
 
             return (
-              <tr key={index}>
+              <tr key={user.uuid}>
                 <td>{index + 1}</td>
-                <td>{uuidv4()}</td>
+                <td>{user.uuid}</td>
                 <td>{modifiedName}</td>
                 <td>{modifiedLocation}</td>
                 <td>{modifiedPhone}</td>

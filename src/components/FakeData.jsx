@@ -1,5 +1,6 @@
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useState, useEffect, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
 import SelectRegion from './SelectRegion';
 import SliderError from './SliderError';
@@ -72,7 +73,14 @@ function FakeData() {
       randomSeed: rng.int32(),
     });
   };
-
+  //Random indentifier
+  const addRandomIdentifier = (users) => {
+    const addUsersUUID = users.map((user) => ({
+      ...user,
+      uuid: uuidv4(),
+    }));
+    return addUsersUUID;
+  };
   // Errors
   const getRandomIndex = (length) => Math.floor(Math.random() * length);
   const getNonSpaceIndices = (str) => {
@@ -163,7 +171,10 @@ function FakeData() {
         `https://randomuser.me/api/?page=${page}&results=10&seed=${formData.randomSeed}&nat=${formData.selectedRegion}&inc=name,location,phone`
       );
       const data = await response.json();
-      setUsers((prevUsers) => [...prevUsers, ...data.results]); // Add new users
+      setUsers((prevUsers) => [
+        ...prevUsers,
+        ...addRandomIdentifier(data.results),
+      ]); // Add new users
       setPage((prevPage) => prevPage + 1); // Increase page
     } catch (error) {
       console.error('Error al cargar más usuarios:', error);
@@ -179,7 +190,7 @@ function FakeData() {
         `https://randomuser.me/api/?page=1&results=20&seed=${formData.randomSeed}&nat=${formData.selectedRegion}&inc=name,location,phone`
       );
       const data = await response.json();
-      setUsers(data.results);
+      setUsers(addRandomIdentifier(data.results));
     } catch (error) {
       console.error('Error to fetch users:', error);
     }
