@@ -15,6 +15,8 @@ function FakeData() {
     randomSeed: seedrandom('808').int32(),
   });
   const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // Select
   const handleSelectChange = (event) => {
@@ -22,6 +24,8 @@ function FakeData() {
       ...formData,
       selectedRegion: event.target.value,
     });
+    setPage(1); // Return page to 1
+    setUsers([]); // Clean users
   };
 
   // Slider
@@ -149,6 +153,25 @@ function FakeData() {
 
     return modifiedString;
   };
+
+  // Scroll
+  const loadMoreUsers = async () => {
+    if (loading) return; // Avoid multiple simultaneous charges
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch(
+        `https://randomuser.me/api/?page=${page}&results=10&seed=${formData.randomSeed}&nat=${formData.selectedRegion}&inc=name,location,phone`
+      );
+      const data = await response.json();
+      setUsers((prevUsers) => [...prevUsers, ...data.results]); // Add new users
+      setPage((prevPage) => prevPage + 1); // Increase page
+    } catch (error) {
+      console.error('Error al cargar más usuarios:', error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
+
   // API
   const fetchRandomUsers = useCallback(async () => {
     try {
@@ -203,6 +226,7 @@ function FakeData() {
         users={users}
         addErrors={addErrors}
         numberValue={formData.numberValue}
+        loadMoreUsers={loadMoreUsers}
       />
     </Container>
   );
