@@ -7,7 +7,7 @@ import {
   Button,
   Table,
 } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
 
@@ -57,9 +57,11 @@ function FakeData() {
 
   // Random seed
   const handleSeedChange = (event) => {
+    const seed = event.target.value;
     setFormData({
       ...formData,
-      seed: event.target.value,
+      seed: seed,
+      randomSeed: seedrandom(seed).int32(),
     });
   };
   const generateRandomSeed = () => {
@@ -153,20 +155,25 @@ function FakeData() {
     return modifiedString;
   };
   // API
-  const fetchRandomUsers = async () => {
+  const fetchRandomUsers = useCallback(async () => {
     try {
       const response = await fetch(
-        `https://randomuser.me/api/?page=1&results=20&seed=${formData.seed}&nat=${formData.selectedRegion}&inc=name,location,phone`
+        `https://randomuser.me/api/?page=1&results=20&seed=${formData.randomSeed}&nat=${formData.selectedRegion}&inc=name,location,phone`
       );
       const data = await response.json();
       setUsers(data.results);
     } catch (error) {
       console.error('Error to fetch users:', error);
     }
-  };
+  }, [formData.selectedRegion, formData.randomSeed]);
   useEffect(() => {
     fetchRandomUsers();
-  }, [formData.selectedRegion, formData.randomSeed, formData.seed]);
+  }, [
+    formData.selectedRegion,
+    formData.randomSeed,
+    formData.seed,
+    fetchRandomUsers,
+  ]);
   return (
     <Container className="d-flex flex-column">
       <Row className="mb-3 mt-5 flex-column flex-md-row">
