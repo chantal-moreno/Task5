@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
 import SelectRegion from './SelectRegion';
+import SliderError from './SliderError';
 
 function FakeData() {
   const [formData, setFormData] = useState({
@@ -185,22 +186,12 @@ function FakeData() {
           />
         </Col>
         <Col xs={12} md={6} lg={3} className="mb-3">
-          <InputGroup>
-            <InputGroup.Text>Slider</InputGroup.Text>
-            <Form.Control
-              type="range"
-              min="0"
-              max="10"
-              value={formData.sliderValue}
-              onChange={handleSliderChange}
-            />
-            <Form.Control
-              type="number"
-              min="0"
-              value={formData.numberValue}
-              onChange={handleNumberChange}
-            />
-          </InputGroup>
+          <SliderError
+            sliderValue={formData.sliderValue}
+            numberValue={formData.numberValue}
+            handleSliderChange={handleSliderChange}
+            handleNumberChange={handleNumberChange}
+          />
         </Col>
         <Col xs={12} md={6} lg={3} className="mb-3">
           <InputGroup>
