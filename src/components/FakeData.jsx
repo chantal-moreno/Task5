@@ -1,10 +1,10 @@
-import { Container, Row, Col, Button, Table } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useState, useEffect, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
 import SelectRegion from './SelectRegion';
 import SliderError from './SliderError';
 import Seed from './Seed';
+import UserTable from './UserTable';
 
 function FakeData() {
   const [formData, setFormData] = useState({
@@ -199,32 +199,11 @@ function FakeData() {
           </Button>
         </Col>
       </Row>
-
-      <Table striped bordered hover>
-        <tbody>
-          {users.map((user, index) => {
-            const modifiedName = addErrors(
-              `${user.name.first} ${user.name.last}`,
-              formData.numberValue
-            );
-            const modifiedLocation = addErrors(
-              `${user.location.state}, ${user.location.city}, ${user.location.street.name}, ${user.location.street.number}`,
-              formData.numberValue
-            );
-            const modifiedPhone = addErrors(user.phone, formData.numberValue);
-
-            return (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{uuidv4()}</td>
-                <td>{modifiedName}</td>
-                <td>{modifiedLocation}</td>
-                <td>{modifiedPhone}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <UserTable
+        users={users}
+        addErrors={addErrors}
+        numberValue={formData.numberValue}
+      />
     </Container>
   );
 }
