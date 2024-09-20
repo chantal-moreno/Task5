@@ -1,17 +1,10 @@
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  InputGroup,
-  Button,
-  Table,
-} from 'react-bootstrap';
+import { Container, Row, Col, Button, Table } from 'react-bootstrap';
 import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
 import SelectRegion from './SelectRegion';
 import SliderError from './SliderError';
+import Seed from './Seed';
 
 function FakeData() {
   const [formData, setFormData] = useState({
@@ -194,18 +187,11 @@ function FakeData() {
           />
         </Col>
         <Col xs={12} md={6} lg={3} className="mb-3">
-          <InputGroup>
-            <InputGroup.Text id="basic-addon1">Seed</InputGroup.Text>
-            <Form.Control
-              placeholder="Enter seed"
-              value={formData.seed}
-              onChange={handleSeedChange}
-              aria-describedby="basic-addon1"
-            />
-            <Button variant="warning" onClick={generateRandomSeed}>
-              <i className="bi bi-shuffle"></i>
-            </Button>
-          </InputGroup>
+          <Seed
+            seed={formData.seed}
+            handleSeedChange={handleSeedChange}
+            generateRandomSeed={generateRandomSeed}
+          />
         </Col>
         <Col xs={12} md={6} lg={3} className="mb-3">
           <Button variant="secondary" className="w-100">
