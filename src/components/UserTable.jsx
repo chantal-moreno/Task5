@@ -1,22 +1,22 @@
 import { Table } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 function UserTable({ users, addErrors, numberValue, loadMoreUsers }) {
   const tableContainerRef = useRef(null);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const { scrollTop, scrollHeight, clientHeight } = tableContainerRef.current;
     if (scrollTop + clientHeight >= scrollHeight) {
       loadMoreUsers();
     }
-  };
+  }, [loadMoreUsers]);
 
   useEffect(() => {
     const tableContainer = tableContainerRef.current;
     tableContainer.addEventListener('scroll', handleScroll);
     return () => tableContainer.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
   return (
     <div
       ref={tableContainerRef}

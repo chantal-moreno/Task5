@@ -1,4 +1,4 @@
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
@@ -206,13 +206,13 @@ function FakeData() {
   return (
     <Container className="d-flex flex-column">
       <Row className="mb-3 mt-5 flex-column flex-md-row">
-        <Col xs={12} md={6} lg={3} className="mb-3">
+        <Col xs={12} md={4} lg={4} className="mb-3">
           <SelectRegion
             selectedRegion={formData.selectedRegion}
             handleSelectChange={handleSelectChange}
           />
         </Col>
-        <Col xs={12} md={6} lg={3} className="mb-3">
+        <Col xs={12} md={4} lg={4} className="mb-3">
           <SliderError
             sliderValue={formData.sliderValue}
             numberValue={formData.numberValue}
@@ -220,17 +220,12 @@ function FakeData() {
             handleNumberChange={handleNumberChange}
           />
         </Col>
-        <Col xs={12} md={6} lg={3} className="mb-3">
+        <Col xs={12} md={4} lg={4} className="mb-3">
           <Seed
             seed={formData.seed}
             handleSeedChange={handleSeedChange}
             generateRandomSeed={generateRandomSeed}
           />
-        </Col>
-        <Col xs={12} md={6} lg={3} className="mb-3">
-          <Button variant="secondary" className="w-100">
-            Export
-          </Button>
         </Col>
       </Row>
       <UserTable
