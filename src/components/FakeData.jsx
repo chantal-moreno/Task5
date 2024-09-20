@@ -10,6 +10,7 @@ import {
 import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import seedrandom from 'seedrandom';
+import SelectRegion from './SelectRegion';
 
 function FakeData() {
   const [formData, setFormData] = useState({
@@ -178,20 +179,10 @@ function FakeData() {
     <Container className="d-flex flex-column">
       <Row className="mb-3 mt-5 flex-column flex-md-row">
         <Col xs={12} md={6} lg={3} className="mb-3">
-          <InputGroup>
-            <InputGroup.Text>Region</InputGroup.Text>
-            <Form.Select
-              aria-label="Select region"
-              value={formData.selectedRegion}
-              onChange={handleSelectChange}
-            >
-              <option value="mx">Mexico</option>
-              <option value="rs">Russia</option>
-              <option value="us">United States</option>
-              <option value="fr">France</option>
-              <option value="nz">New Zealand</option>
-            </Form.Select>
-          </InputGroup>
+          <SelectRegion
+            selectedRegion={formData.selectedRegion}
+            handleSelectChange={handleSelectChange}
+          />
         </Col>
         <Col xs={12} md={6} lg={3} className="mb-3">
           <InputGroup>
