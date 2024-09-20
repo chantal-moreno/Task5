@@ -55,7 +55,7 @@ function FakeData() {
     }
   };
 
-  // Randomseed
+  // Random seed
   const handleSeedChange = (event) => {
     setFormData({
       ...formData,
@@ -72,6 +72,86 @@ function FakeData() {
     });
   };
 
+  // Errors
+  const getRandomIndex = (length) => Math.floor(Math.random() * length);
+  const getNonSpaceIndices = (str) => {
+    return [...str]
+      .map((char, index) => (char !== ' ' ? index : -1))
+      .filter((index) => index !== -1);
+  };
+  // Delete
+  const removeRandomCharacter = (str) => {
+    const nonSpaceIndices = getNonSpaceIndices(str);
+    if (nonSpaceIndices.length === 0) return str;
+
+    const randomIndex = nonSpaceIndices[getRandomIndex(nonSpaceIndices.length)];
+    return str.slice(0, randomIndex) + str.slice(randomIndex + 1);
+  };
+  // Add
+  const addRandomCharacter = (str) => {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const randomChar = characters.charAt(getRandomIndex(characters.length));
+    const randomIndex = getRandomIndex(str.length + 1);
+    return str.slice(0, randomIndex) + randomChar + str.slice(randomIndex);
+  };
+  // Swap
+  const swapRandomCharacter = (str) => {
+    if (str.length < 2) return str;
+
+    const nonSpaceIndices = getNonSpaceIndices(str);
+    const randomIndex = nonSpaceIndices[getRandomIndex(nonSpaceIndices.length)];
+    // swap with the previous or next character
+    const swapIndex =
+      randomIndex === 0
+        ? 1 // start, swap with the next one
+        : randomIndex === str.length - 1
+        ? randomIndex - 1 // end, exchange with the previous one
+        : Math.random() < 0.5 // middle, randomly swap with previous or next
+        ? randomIndex - 1
+        : randomIndex + 1;
+
+    const charArray = [...str];
+    // swap
+    [charArray[randomIndex], charArray[swapIndex]] = [
+      charArray[swapIndex],
+      charArray[randomIndex],
+    ];
+
+    return charArray.join('');
+  };
+
+  // Random error multiple times
+  const addErrors = (str, times) => {
+    const integerPart = Math.floor(times);
+    const fractionalPart = times - integerPart;
+
+    // Select error
+    const selectRandomError = () => {
+      const errors = [
+        removeRandomCharacter,
+        addRandomCharacter,
+        swapRandomCharacter,
+      ];
+      return errors[Math.floor(Math.random() * errors.length)];
+    };
+
+    let modifiedString = str;
+
+    // Perform the whole number of times
+    for (let i = 0; i < integerPart; i++) {
+      const operation = selectRandomError();
+      modifiedString = operation(modifiedString);
+    }
+
+    // Handling the fractional part
+    if (Math.random() < fractionalPart) {
+      const operation = selectRandomError();
+      modifiedString = operation(modifiedString);
+    }
+
+    return modifiedString;
+  };
   // API
   const fetchRandomUsers = async () => {
     try {
@@ -87,7 +167,6 @@ function FakeData() {
   useEffect(() => {
     fetchRandomUsers();
   }, [formData.selectedRegion, formData.randomSeed, formData.seed]);
-
   return (
     <Container className="d-flex flex-column">
       <Row className="mb-3 mt-5 flex-column flex-md-row">
@@ -148,15 +227,27 @@ function FakeData() {
 
       <Table striped bordered hover>
         <tbody>
-          {users.map((user, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{uuidv4()}</td>
-              <td>{`${user.name.first} ${user.name.last}`}</td>
-              <td>{`${user.location.state}, ${user.location.city}, ${user.location.street.name}, ${user.location.street.number}`}</td>
-              <td>{`${user.phone}`}</td>
-            </tr>
-          ))}
+          {users.map((user, index) => {
+            const modifiedName = addErrors(
+              `${user.name.first} ${user.name.last}`,
+              formData.numberValue
+            );
+            const modifiedLocation = addErrors(
+              `${user.location.state}, ${user.location.city}, ${user.location.street.name}, ${user.location.street.number}`,
+              formData.numberValue
+            );
+            const modifiedPhone = addErrors(user.phone, formData.numberValue);
+
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{uuidv4()}</td>
+                <td>{modifiedName}</td>
+                <td>{modifiedLocation}</td>
+                <td>{modifiedPhone}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </Container>
