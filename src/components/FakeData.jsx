@@ -16,7 +16,7 @@ function FakeData() {
     randomSeed: seedrandom('808').int32(),
   });
   const [users, setUsers] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
 
   // Select
@@ -63,6 +63,8 @@ function FakeData() {
       seed: seed,
       randomSeed: seedrandom(seed).int32(),
     });
+    setPage(2); // Return page to 1
+    setUsers([]); // Clean users
   };
   const generateRandomSeed = () => {
     const seed = Math.floor(Math.random() * 100000).toString();
@@ -72,6 +74,8 @@ function FakeData() {
       seed: seed,
       randomSeed: rng.int32(),
     });
+    setPage(2); // Return page to 1
+    setUsers([]); // Clean users
   };
   //Random indentifier
   const addRandomIdentifier = (users) => {
